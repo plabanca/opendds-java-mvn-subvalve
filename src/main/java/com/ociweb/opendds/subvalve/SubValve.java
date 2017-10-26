@@ -127,15 +127,15 @@ public class SubValve {
             System.err.println("ERROR: Domain Participant creation failed");
             return;
         }
-        ValveStatusTypeSupportImpl localValveStatusTypeSupportImpl = new ValveStatusTypeSupportImpl();
-        if (localValveStatusTypeSupportImpl.register_type(localDomainParticipant, "") != 0) {
+        ValveDataTypeSupportImpl valveDataTypeSupport = new ValveDataTypeSupportImpl();
+        if (valveDataTypeSupport.register_type(localDomainParticipant, "") != 0) {
             System.err.println("ERROR: register_type failed");
             return;
         }
 
         Topic localTopic = localDomainParticipant.create_topic(
                 VALVE_TOPIC,
-                localValveStatusTypeSupportImpl.get_type_name(),
+                valveDataTypeSupport.get_type_name(),
                 TOPIC_QOS_DEFAULT.get(),
                 null,
                 -1);
@@ -185,7 +185,7 @@ public class SubValve {
         DataReaderQosHolder localDataReaderQosHolder = new DataReaderQosHolder(localDataReaderQos);
         localSubscriber.get_default_datareader_qos(localDataReaderQosHolder);
         if (reliable) {
-            localDataReaderQosHolder.value.reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
+            //localDataReaderQosHolder.value.reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
         }
         localDataReaderQosHolder.value.history.kind = HistoryQosPolicyKind.KEEP_ALL_HISTORY_QOS;
 
@@ -223,9 +223,6 @@ public class SubValve {
                 return;
             }
         }
-        System.out.println("Subscriber Report Validity");
-
-        localDataReaderListenerImpl.report_validity();
 
         localWaitSet.detach_condition(localStatusCondition);
 
